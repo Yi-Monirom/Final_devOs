@@ -30,7 +30,7 @@ jobs:
           username: ${{ secrets.MAIL_NAME }}
           password: ${{ secrets.MAIL_PASS }}
           subject: "SUCCESS: ${{ github.repository }} - Commit ${{ github.sha }}"
-          to: ${{ secrets.MAIL_TO }}
+          to: ${{ moniromyi@gmail.com}}
           from: ${{ secrets.MAIL_NAME }}
           body: |
             Job: ${{ github.repository }}

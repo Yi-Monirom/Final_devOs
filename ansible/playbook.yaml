@@ -17,15 +17,6 @@
     - name: Allow git repository ownership
       shell: git config --global --add safe.directory {{ app_dir }}
 
-
-    - name: Remove local git changes
-      shell: |
-        git reset --hard HEAD
-        git clean -fd
-      args:
-        chdir: "{{ app_dir }}"
-
-
     - name: Pull latest code
       shell: git pull
       args:

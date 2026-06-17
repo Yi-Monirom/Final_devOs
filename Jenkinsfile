@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     triggers {
+        // Poll SCM every 5 minutes
         pollSCM('*/5 * * * *')
     }
 
@@ -30,7 +31,8 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'chmod +x ${WORKSPACE}/deploy.sh && ${WORKSPACE}/deploy.sh'
+                // Run Ansible Playbook to deploy to Web Server
+                sh "ansible-playbook -i ${INVENTORY} ${PLAYBOOK}"
             }
         }
     }
@@ -44,39 +46,40 @@ pipeline {
                 to: "${MAIL_RECIPIENT}",
                 from: "moniromyi@gmail.com",
                 subject: "SUCCESS: Pipeline ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                body: "The pipeline completed successfully. Check ${env.BUILD_URL} for details.",
-                mimeType: 'text/html'
+                body: "The pipeline completed successfully.\nBuild URL: ${env.BUILD_URL}",
+                mimeType: 'text/plain' // Plain text, no HTML
             )
         }
         failure {
             script {
-                // 1. Get the email of the developer who made the last commit
+                // Get the email of the developer who made the last commit
                 def committerEmail = sh(
                     script: "git log -1 --format='%ae'",
                     returnStdout: true
                 ).trim()
                 
-                // Fallback in case the commit somehow has no email attached
+                // Fallback if the commit has no email
                 if (!committerEmail) {
                     committerEmail = "unknown@developer.com"
                 }
 
-                // 2. Send the failure email
+                // Send failure email
                 emailext(
                     to: "${MAIL_RECIPIENT}, ${committerEmail}", // Sends to you AND the developer
                     cc: "srengty@gmail.com",                    // CCs the SRE
-                    from: "moniromyi@gmail.com",                // REQUIRED for Gmail to accept it
+                    from: "moniromyi@gmail.com",                // Required for Gmail to accept it
                     subject: "FAILED: Pipeline ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                    body: """
-                        <h2>Build Failed!</h2>
-                        <p>The pipeline failed during execution.</p>
-                        <p><strong>Job:</strong> ${env.JOB_NAME}</p>
-                        <p><strong>Build Number:</strong> ${env.BUILD_NUMBER}</p>
-                        <p><strong>Build URL:</strong> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                        <p><strong>Last Committer:</strong> ${committerEmail}</p>
-                        <p>Please check the console output for more details.</p>
-                    """,
-                    mimeType: 'text/html'
+                    body: """\
+                        Build Failed!
+                        
+                        Job: ${env.JOB_NAME}
+                        Build Number: ${env.BUILD_NUMBER}
+                        Build URL: ${env.BUILD_URL}
+                        Last Committer: ${committerEmail}
+                        
+                        Please check the console output for more details.
+                    """.stripIndent(),
+                    mimeType: 'text/plain' // Plain text, no HTML
                 )
             }
         }

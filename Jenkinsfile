@@ -50,9 +50,7 @@ pipeline {
 
         stage('Deploy with Ansible') {
             steps {
-                dir("${WORKSPACE}") {
-                    sh "ansible-playbook -i ${INVENTORY} ${PLAYBOOK}"
-                }
+                sh "docker exec web_choice_a ansible-playbook -i /var/www/html/app/ansible/inventory.ini /var/www/html/app/ansible/playbook.yaml"
             }
         }
     }

@@ -1,0 +1,71 @@
+---
+- name: Build Test and Backup Spring Boot Application
+  hosts: Web_server
+  become: true
+
+  vars:
+    app_dir: /var/www/html/app
+    db_name: A-Yi_Monirom-db
+    backup_dir: /var/www/html/app/backups
+
+  tasks:
+
+    - name: Check connection
+      ping:
+
+
+    - name: Allow git repository ownership
+      shell: git config --global --add safe.directory {{ app_dir }}
+
+
+    - name: Remove local git changes
+      shell: |
+        git reset --hard HEAD
+        git clean -fd
+      args:
+        chdir: "{{ app_dir }}"
+
+
+    - name: Pull latest code
+      shell: git pull
+      args:
+        chdir: "{{ app_dir }}"
+
+
+    - name: Create backup directory
+      file:
+        path: "{{ backup_dir }}"
+        state: directory
+        mode: "0755"
+
+
+    - name: Build Spring Boot project
+      shell: mvn clean package -DskipTests
+      args:
+        chdir: "{{ app_dir }}"
+
+
+    - name: Run tests using SQLite profile
+      shell: mvn test -Dspring.profiles.active=test
+      args:
+        chdir: "{{ app_dir }}"
+
+
+    - name: Backup MySQL database
+      shell: |
+        mysqldump \
+        -h mysql \
+        -u root \
+        -pHello@123 \
+        {{ db_name }} \
+        > {{ backup_dir }}/backup-$(date +%Y%m%d-%H%M%S).sql
+
+
+    - name: Show backup result
+      shell: ls -lh {{ backup_dir }}
+      register: backup
+
+
+    - name: Display backup files
+      debug:
+        var: backup.stdout_lines

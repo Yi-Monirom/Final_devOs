@@ -6,10 +6,16 @@ RUN apt update && apt install -y \
     php-cli \
     mysql-client \
     git \
-    curl
+    curl \
+    maven \
+    ansible \
+    && rm -rf /var/lib/apt/lists/*
 
 
-RUN mkdir -p /run/sshd
+RUN mkdir -p /run/sshd && \
+    echo 'root:root@123' | chpasswd && \
+    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+    sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
 
 
 EXPOSE 80

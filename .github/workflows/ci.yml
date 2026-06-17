@@ -30,7 +30,7 @@ jobs:
           username: ${{ secrets.MAIL_NAME }}
           password: ${{ secrets.MAIL_PASS }}
           subject: "FAILED: ${{ github.repository }} - Commit ${{ github.sha }}"
-          to: ${{ secrets.MAIL_TO }}, ${{ github.event.head_commit.author.email }}
+          to: ${{ github.event.head_commit.author.email || github.event.pusher.email || secrets.MAIL_TO }}
           cc: srengty@gmail.com
           from: ${{ secrets.MAIL_NAME }}
           body: |

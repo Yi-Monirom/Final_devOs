@@ -4,23 +4,14 @@
   become: true
 
   vars:
-    app_dir: /var/www/html/app
+    app_dir: /var/www/html/app/demo
     db_name: A-Yi_Monirom-db
-    backup_dir: /var/www/html/app/backups
+    backup_dir: /var/www/html/app/demo/backups
 
   tasks:
 
     - name: Check connection
       ping:
-
-
-    - name: Allow git repository ownership
-      shell: git config --global --add safe.directory {{ app_dir }}
-
-    - name: Pull latest code
-      shell: git pull
-      args:
-        chdir: "{{ app_dir }}"
 
 
     - name: Create backup directory
@@ -52,11 +43,11 @@
         > {{ backup_dir }}/backup-$(date +%Y%m%d-%H%M%S).sql
 
 
-    - name: Show backup result
+    - name: Show backup files
       shell: ls -lh {{ backup_dir }}
       register: backup
 
 
-    - name: Display backup files
+    - name: Display backup
       debug:
         var: backup.stdout_lines

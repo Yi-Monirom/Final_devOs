@@ -8,8 +8,8 @@ services:
       - ./demo:/var/www/html/app
       - /home/rom/.ssh/id_rsa.pub:/root/.ssh/authorized_keys:ro
     ports:
-      - "8443:80"
-      - "2222:22"
+      - 8443:80
+      - 2222:22
     depends_on:
       mysql:
         condition: service_healthy
@@ -28,7 +28,7 @@ services:
       MYSQL_ROOT_PASSWORD: Hello@123
       MYSQL_DATABASE: B-Yi_Moniom-db 
     ports:
-      - "3307:3306"
+      - 3307:3306
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -37,6 +37,22 @@ services:
       timeout: 5s
       retries: 10
 
+    restart: unless-stopped
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    ports:
+      - 8888:80
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: Hello@123
+      UPLOAD_LIMIT: 100M
+    depends_on:
+      mysql:
+        condition: service_healthy
     restart: unless-stopped
 
 volumes:

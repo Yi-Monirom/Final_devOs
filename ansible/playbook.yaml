@@ -2,6 +2,7 @@
 - name: Build Test and Backup Spring Boot Application
   hosts: Web_server
   become: false
+  gather_facts: false
 
   vars:
     app_dir: /var/www/html/app/demo

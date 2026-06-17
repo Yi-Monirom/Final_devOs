@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     triggers {
-        // Poll SCM every 5 minutes
         pollSCM('*/5 * * * *')
     }
 
@@ -31,8 +30,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                // Run Ansible Playbook to deploy to Web Server
-                sh "ansible-playbook -i ${INVENTORY} ${PLAYBOOK}"
+                sh 'chmod +x ${WORKSPACE}/deploy.sh && ${WORKSPACE}/deploy.sh'
             }
         }
     }
@@ -45,41 +43,25 @@ pipeline {
             emailext(
                 to: "${MAIL_RECIPIENT}",
                 from: "moniromyi@gmail.com",
-                subject: "SUCCESS: Pipeline ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                body: "The pipeline completed successfully.\nBuild URL: ${env.BUILD_URL}",
-                mimeType: 'text/plain' // Plain text, no HTML
+                subject: "SUCCESS: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+                body: "Job: ${env.JOB_NAME}\nBuild: ${env.BUILD_NUMBER}\nStatus: SUCCESS\nURL: ${env.BUILD_URL}"
             )
         }
         failure {
             script {
-                // Get the email of the developer who made the last commit
                 def committerEmail = sh(
                     script: "git log -1 --format='%ae'",
                     returnStdout: true
                 ).trim()
-                
-                // Fallback if the commit has no email
                 if (!committerEmail) {
                     committerEmail = "unknown@developer.com"
                 }
-
-                // Send failure email
                 emailext(
-                    to: "${MAIL_RECIPIENT}, ${committerEmail}", // Sends to you AND the developer
-                    cc: "srengty@gmail.com",                    // CCs the SRE
-                    from: "moniromyi@gmail.com",                // Required for Gmail to accept it
-                    subject: "FAILED: Pipeline ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                    body: """\
-                        Build Failed!
-                        
-                        Job: ${env.JOB_NAME}
-                        Build Number: ${env.BUILD_NUMBER}
-                        Build URL: ${env.BUILD_URL}
-                        Last Committer: ${committerEmail}
-                        
-                        Please check the console output for more details.
-                    """.stripIndent(),
-                    mimeType: 'text/plain' // Plain text, no HTML
+                    to: "${MAIL_RECIPIENT}, ${committerEmail}",
+                    cc: "srengty@gmail.com",
+                    from: "moniromyi@gmail.com",
+                    subject: "FAILED: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+                    body: "Job: ${env.JOB_NAME}\nBuild: ${env.BUILD_NUMBER}\nStatus: FAILED\nCommitter: ${committerEmail}\nURL: ${env.BUILD_URL}"
                 )
             }
         }

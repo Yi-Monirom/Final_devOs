@@ -6,6 +6,7 @@ services:
     build: ./demo
     volumes:
       - ./demo:/var/www/html/app
+      - /home/rom/.ssh/id_rsa.pub:/root/.ssh/authorized_keys:ro
     ports:
       - "8443:80"
       - "2222:22"
@@ -29,7 +30,7 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      -  mysql_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pHello@123"]
       interval: 10s

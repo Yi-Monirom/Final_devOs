@@ -10,7 +10,7 @@ pipeline {
         ANSIBLE_DIR = "${WORKSPACE}/ansible"
         INVENTORY = "${ANSIBLE_DIR}/inventory.ini"
         PLAYBOOK = "${ANSIBLE_DIR}/playbook.yaml"
-        MAIL_RECIPIENT = "srengty@gmail.com"
+        MAIL_RECIPIENT = "moniromyi@gmail.com"
     }
 
     stages {

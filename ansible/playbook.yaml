@@ -1,7 +1,6 @@
 ---
 - name: Build Test and Backup Spring Boot Application
   hosts: Web_server
-  become: false
   gather_facts: false
 
   vars:
@@ -11,23 +10,23 @@
 
   tasks:
     - name: Configure nginx reverse proxy for Spring Boot
-      copy:
-        dest: /etc/nginx/sites-available/spring-boot
-        content: |
-          server {
-              listen 80;
+      shell: |
+        cat > /etc/nginx/sites-available/spring-boot << 'NGINX'
+        server {
+            listen 80;
+            server_name _;
 
-              server_name _;
-
-              location / {
-                  proxy_pass http://127.0.0.1:8081;
-
-                  proxy_set_header Host $host;
-                  proxy_set_header X-Real-IP $remote_addr;
-                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                  proxy_set_header X-Forwarded-Proto $scheme;
-              }
-          }
+            location / {
+                proxy_pass http://127.0.0.1:8081;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+            }
+        }
+        NGINX
+        ln -sf /etc/nginx/sites-available/spring-boot /etc/nginx/sites-enabled/
+        rm -f /etc/nginx/sites-enabled/default
 
     - name: Test nginx config
       command: nginx -t
@@ -35,16 +34,8 @@
     - name: Restart nginx
       command: nginx -s reload
 
-    - name: Check connection
-      ping:
-
-
     - name: Create backup directory
-      file:
-        path: "{{ backup_dir }}"
-        state: directory
-        mode: "0755"
-
+      shell: mkdir -p {{ backup_dir }}
 
     - name: Build Spring Boot project
       shell: mvn clean package -DskipTests
@@ -69,13 +60,12 @@
         -u root \
         -pHello@123 \
         {{ db_name }} \
-        > {{ backup_dir }}/backup.sql
+        > {{ backup_dir }}/backup-$(date +%Y%m%d-%H%M%S).sql
 
 
     - name: Show backup files
       shell: ls -lh {{ backup_dir }}
       register: backup
-
 
     - name: Display backup
       debug:

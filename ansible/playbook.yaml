@@ -68,7 +68,7 @@
         -u root \
         -pHello@123 \
         {{ db_name }} \
-        > {{ backup_dir }}/backup-$(date +%Y%m%d-%H%M%S).sql
+        > {{ backup_dir }}/backup.sql
 
 
     - name: Show backup files

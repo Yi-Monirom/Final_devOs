@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments :: head('Home')}"></head>
+<body>
+    <nav th:replace="~{fragments :: navbar}"></nav>
+
+    <div class="container container-wrapper">
+        <div class="hero-section">
+            <i class="bi bi-person-badge-fill" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.8;"></i>
+            <h1>ID Card Management System</h1>
+            <p>Create, manage, and print ID cards for students, employees, and users</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <a href="/profiles" class="text-decoration-none">
+                    <div class="dashboard-card card">
+                        <div class="card-body">
+                            <div class="icon blue"><i class="bi bi-people-fill"></i></div>
+                            <h5>Profiles</h5>
+                            <p>Create, edit, and manage all ID card profiles</p>
+                            <span class="btn btn-primary">Manage Profiles</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="/templates" class="text-decoration-none">
+                    <div class="dashboard-card card">
+                        <div class="card-body">
+                            <div class="icon green"><i class="bi bi-palette-fill"></i></div>
+                            <h5>Templates</h5>
+                            <p>Design and customize ID card themes</p>
+                            <span class="btn btn-primary">Manage Templates</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="/cards/batch" class="text-decoration-none">
+                    <div class="dashboard-card card">
+                        <div class="card-body">
+                            <div class="icon amber"><i class="bi bi-printer-fill"></i></div>
+                            <h5>Batch Print</h5>
+                            <p>Generate multiple ID cards at once in PDF</p>
+                            <span class="btn btn-primary">Batch Print</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-4">
+                        <h5 class="card-title"><i class="bi bi-info-circle-fill text-primary me-2"></i>Quick Start</h5>
+                        <ol class="mb-0">
+                            <li><strong>Create a Template</strong> — Set up your organization's card design with colors and layout</li>
+                            <li><strong>Add Profiles</strong> — Create student, employee, or user profiles with photos</li>
+                            <li><strong>Preview & Print</strong> — Preview ID cards live, then download as PDF</li>
+                            <li><strong>Batch Generate</strong> — Print multiple cards at once for teams or classes</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments :: footer}"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

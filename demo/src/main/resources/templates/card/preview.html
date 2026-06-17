@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments :: head('ID Card Preview')}"></head>
+<body>
+    <nav th:replace="~{fragments :: navbar}"></nav>
+
+    <div class="container container-wrapper">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="page-title mb-0"><i class="bi bi-eye-fill"></i>ID Card Preview</h4>
+            <a class="btn btn-primary" th:href="@{/cards/pdf/{profileId}(profileId=${profile.id})}"><i class="bi bi-file-pdf"></i> Download PDF</a>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="id-card-preview">
+                    <div class="card" th:style="'border: 2px solid ' + (${profile.template != null} ? ${profile.template.primaryColor} : '#4f46e5')">
+                        <div class="card-header text-white text-center py-3" th:style="'background: linear-gradient(135deg, ' + (${profile.template != null} ? ${profile.template.primaryColor} : '#4f46e5') + ', ' + (${profile.template != null} ? ${profile.template.secondaryColor} : '#6366f1') + ')'">
+                            <h5 class="mb-0" th:text="${profile.template != null and profile.template.organizationName != null} ? ${profile.template.organizationName} : 'Organization Name'"></h5>
+                            <small th:if="${profile.template != null and profile.template.tagline != null}" th:text="${profile.template.tagline}" class="opacity-75"></small>
+                        </div>
+                        <div class="card-body text-center">
+                            <div th:if="${profile.hasPhoto()}">
+                                <img th:src="@{/cards/photos/{filename}(filename=${profile.photoFileName})}"
+                                     class="rounded-circle mb-2 border border-3 img-fluid" th:style="'border-color: ' + (${profile.template != null} ? ${profile.template.primaryColor} : '#4f46e5')"
+                                     style="max-width:100px;width:100%;aspect-ratio:1;object-fit:cover">
+                            </div>
+                            <div th:unless="${profile.hasPhoto()}" class="mb-2">
+                                <div class="photo-placeholder" th:style="'background: linear-gradient(135deg, ' + (${profile.template != null} ? ${profile.template.primaryColor} : '#4f46e5') + ', ' + (${profile.template != null} ? ${profile.template.secondaryColor} : '#6366f1') + ')'"
+                                     th:text="${#strings.substring(profile.fullName, 0, 1)}"></div>
+                            </div>
+                            <h4 class="fw-bold mb-1" th:text="${profile.fullName}"></h4>
+                            <p class="text-muted mb-1"><code th:text="${profile.registrationNumber}"></code></p>
+                            <p class="mb-1" th:text="${profile.department}"></p>
+                            <p class="mb-1" th:text="${profile.title}"></p>
+                            <span class="badge mb-2" th:classappend="${profile.type == 'STUDENT'} ? 'bg-primary' : (${profile.type == 'EMPLOYEE'} ? 'bg-success' : 'bg-secondary')" th:text="${profile.type}"></span>
+                            <hr>
+                            <div class="d-flex justify-content-around align-items-center">
+                                <div>
+                                    <small class="text-muted d-block mb-1">QR Code</small>
+                                    <img th:src="@{/cards/qr/{profileId}(profileId=${profile.id})}" style="width:70px;height:70px">
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block mb-1">Barcode</small>
+                                    <img th:src="@{/cards/barcode/{profileId}(profileId=${profile.id})}" style="height:35px">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-center text-muted small py-2" th:style="'background: ' + (${profile.template != null} ? ${profile.template.secondaryColor} : '#eef2ff')"
+                             th:if="${profile.issueDate != null}">
+                            Issued: <span th:text="${profile.issueDate}"></span>
+                            <span th:if="${profile.expiryDate != null}"> | Expires: <span th:text="${profile.expiryDate}"></span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <a class="btn btn-outline-secondary" th:href="@{/profiles/{id}(id=${profile.id})}"><i class="bi bi-arrow-left"></i> Back to Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments :: footer}"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

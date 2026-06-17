@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments :: head('Template Form')}"></head>
+<body>
+    <nav th:replace="~{fragments :: navbar}"></nav>
+
+    <div class="container container-wrapper">
+        <h4 class="page-title" th:if="${template.id != null}"><i class="bi bi-pencil-square"></i>Edit Template</h4>
+        <h4 class="page-title" th:unless="${template.id != null}"><i class="bi bi-palette-fill"></i>New Template</h4>
+
+        <div class="card">
+            <div class="card-body p-4">
+                <form th:action="${template.id != null} ? @{/templates/{id}/edit(id=${template.id})} : @{/templates/new}"
+                      method="post" th:object="${template}">
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Code <span class="text-danger">*</span></label>
+                            <input class="form-control" type="text" th:field="*{code}" required placeholder="e.g. DEFAULT, MODERN">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Name <span class="text-danger">*</span></label>
+                            <input class="form-control" type="text" th:field="*{name}" required placeholder="e.g. Default Theme">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-2">
+                        <div class="col-12">
+                            <label class="form-label">Organization Name</label>
+                            <input class="form-control" type="text" th:field="*{organizationName}" placeholder="e.g. Royal University of Phnom Penh">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-4">
+                            <label class="form-label">Layout</label>
+                            <select class="form-select" th:field="*{layout}">
+                                <option value="VERTICAL">Vertical</option>
+                                <option value="HORIZONTAL">Horizontal</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Primary Color</label>
+                            <div class="d-flex align-items-center gap-2">
+                                <input class="form-control form-control-color" type="color" th:field="*{primaryColor}" style="width:50px;height:38px;padding:3px">
+                                <input class="form-control" type="text" th:value="*{primaryColor}" maxlength="7" placeholder="#1d4ed8" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Secondary Color</label>
+                            <div class="d-flex align-items-center gap-2">
+                                <input class="form-control form-control-color" type="color" th:field="*{secondaryColor}" style="width:50px;height:38px;padding:3px">
+                                <input class="form-control" type="text" th:value="*{secondaryColor}" maxlength="7" placeholder="#e0e7ff" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-6">
+                            <label class="form-label">Text Color</label>
+                            <div class="d-flex align-items-center gap-2">
+                                <input class="form-control form-control-color" type="color" th:field="*{textColor}" style="width:50px;height:38px;padding:3px">
+                                <input class="form-control" type="text" th:value="*{textColor}" maxlength="7" placeholder="#111827" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Tagline</label>
+                            <input class="form-control" type="text" th:field="*{tagline}" placeholder="e.g. Excellence in Education">
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary px-4"><i class="bi bi-check-lg"></i> Save</button>
+                        <a href="/templates" class="btn btn-outline-secondary px-4"><i class="bi bi-x-lg"></i> Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments :: footer}"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments :: head('Batch Print')}"></head>
+<body>
+    <nav th:replace="~{fragments :: navbar}"></nav>
+
+    <div class="container container-wrapper">
+        <h4 class="page-title"><i class="bi bi-printer-fill"></i>Batch ID Card Generation</h4>
+
+        <div class="card">
+            <div class="card-body p-4">
+                <form method="post" action="/cards/batch">
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label"><i class="bi bi-palette me-1"></i>Template (optional)</label>
+                            <select class="form-select" name="templateId">
+                                <option value="">Use each profile's own template</option>
+                                <option th:each="t : ${templates}" th:value="${t.id}" th:text="${t.name}"></option>
+                            </select>
+                            <div class="form-text">Choose a template to override all selected profiles.</div>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary btn-lg w-100"><i class="bi bi-file-earmark-pdf-fill"></i> Generate Batch PDF</button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th style="width:40px"><input type="checkbox" id="selectAll" class="form-check-input"></th>
+                                    <th>Reg No</th>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="p : ${profiles}">
+                                    <td><input type="checkbox" name="profileIds" th:value="${p.id}" class="form-check-input"></td>
+                                    <td><code th:text="${p.registrationNumber}"></code></td>
+                                    <td th:text="${p.fullName}"></td>
+                                    <td><span class="badge" th:classappend="${p.type == 'STUDENT'} ? 'bg-primary' : (${p.type == 'EMPLOYEE'} ? 'bg-success' : 'bg-secondary')" th:text="${p.type}"></span></td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(profiles)}">
+                                    <td colspan="4" class="text-center py-4 text-muted">
+                                        <i class="bi bi-inbox" style="font-size: 2rem; display: block; margin-bottom: 0.5rem;"></i>
+                                        No profiles available
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments :: footer}"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('selectAll').addEventListener('change', function() {
+            document.querySelectorAll('input[name="profileIds"]').forEach(cb => cb.checked = this.checked);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+services:
+  web_app:
+    container_name: web_choice_a
+    
+    build: ./app
+    volumes:
+      - ./app:/var/www/html/app
+    ports:
+      - "8081:80"
+      - "2222:22"
+    

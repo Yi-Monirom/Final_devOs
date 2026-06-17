@@ -21,6 +21,11 @@ jobs:
           chmod +x deploy.sh
           ./deploy.sh
 
+      - name: Get server IP
+        if: success()
+        id: server-ip
+        run: echo "ip=$(hostname -I | awk '{print $1}')" >> $GITHUB_OUTPUT
+
       - name: Notify success
         if: success()
         uses: dawidd6/action-send-mail@v4
@@ -38,7 +43,7 @@ jobs:
             Author: ${{ github.event.head_commit.author.name }}
             Status: SUCCESS
             URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            Deployed at: http://localhost:8443
+            Deployed at: http://${{ steps.server-ip.outputs.ip }}:8443
 
       - name: Notify failure
         if: failure()

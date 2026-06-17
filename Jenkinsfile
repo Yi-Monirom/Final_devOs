@@ -48,9 +48,9 @@ pipeline {
             }
         }
 
-        stage('Deploy with Ansible') {
+        stage('Deploy') {
             steps {
-                sh "docker exec web_choice_a ansible-playbook -i /var/www/html/app/ansible/inventory.ini /var/www/html/app/ansible/playbook.yaml"
+                sh 'chmod +x ${WORKSPACE}/deploy.sh && ${WORKSPACE}/deploy.sh'
             }
         }
     }

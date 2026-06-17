@@ -51,7 +51,7 @@ pipeline {
         stage('Deploy with Ansible') {
             steps {
                 dir("${WORKSPACE}") {
-                    sh "/home/rom/.local/bin/ansible-playbook -i ${INVENTORY} ${PLAYBOOK}"
+                    sh "ansible-playbook -i ${INVENTORY} ${PLAYBOOK}"
                 }
             }
         }

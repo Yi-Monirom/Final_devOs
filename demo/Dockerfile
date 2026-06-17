@@ -18,8 +18,9 @@ RUN mkdir -p /run/sshd && \
     sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
 
 
-EXPOSE 80
+EXPOSE 8080
 EXPOSE 22
+EXPOSE 8443
 
 
 CMD service ssh start && \

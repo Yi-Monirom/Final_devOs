@@ -1,11 +1,42 @@
+version: '3.9'
+
 services:
   web_app:
     container_name: web_choice_a
-    
-    build: ./app
+    build: ./demo
     volumes:
-      - ./app:/var/www/html/app
+      - ./demo:/var/www/html/app
     ports:
-      - "8081:80"
+      - "8443:80"
       - "2222:22"
-    
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/A-Yi_Monirith-db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Hello@123
+
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.4
+    container_name: monirom_db
+    environment:
+      MYSQL_ROOT_PASSWORD: Hello@123
+      MYSQL_DATABASE: B-Yi_Moniom-db 
+    ports:
+      - "3307:3306"
+    volumes:
+      -  mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pHello@123"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+    restart: unless-stopped
+
+volumes:
+  mysql_data:

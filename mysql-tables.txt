@@ -1,4 +1,4 @@
-mysql: [Warning] Using a password on the command line interface can be insecure.
+
 Tables_in_student_employee
 profiles
 templates

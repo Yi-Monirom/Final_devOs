@@ -3,5 +3,6 @@
         "demo/src/main/java",
         "demo/src/test/java"
     ],
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.compile.nullAnalysis.mode": "automatic"
 }
